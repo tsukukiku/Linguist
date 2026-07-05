@@ -646,7 +646,23 @@
       padding: 0 4px;
       border-radius: 5px;
       cursor: pointer;
+      -webkit-touch-callout: default;
+      -webkit-user-select: text;
+      user-select: text;
       transition: background .12s ease, color .12s ease;
+    }
+
+    [data-lookup-word] {
+      -webkit-touch-callout: default;
+      -webkit-user-select: text;
+      user-select: text;
+    }
+
+    .lookup-selected {
+      outline: 2px solid var(--amber);
+      outline-offset: 2px;
+      background: var(--amber-soft) !important;
+      color: var(--ink) !important;
     }
 
     .word.hidden {
@@ -737,14 +753,15 @@
       border-radius: 5px;
       background: #fff;
       border: 1px solid var(--line);
+      -webkit-touch-callout: default;
+      -webkit-user-select: text;
+      user-select: text;
     }
 
     .game-word.pending {
       min-width: 34px;
-      color: var(--muted);
+      color: transparent;
       background: #dbe4ee;
-      letter-spacing: .08em;
-      font-weight: 800;
     }
 
     .game-word.current {
@@ -1229,9 +1246,6 @@
 
     body.light-mode.focus-game .game-word.pending {
       background: #d9e1ea;
-      color: #334155;
-      -webkit-text-fill-color: #334155;
-      text-shadow: none;
     }
 
     body.light-mode.focus-game .choice {
@@ -1912,7 +1926,7 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
         }
         if (mode === "full") cls += " revealed";
         const title = isCurrent ? "当前句" : "";
-        return `<span class="${cls}" data-word="${escapeAttr(token.text)}" title="${title}">${escapeHtml(display)}</span>`;
+        return `<span class="${cls}" data-word="${escapeAttr(token.text)}" data-lookup-word="${escapeAttr(token.text)}" title="${title}">${escapeHtml(display)}</span>`;
       }).join("");
     }
 
@@ -1925,21 +1939,6 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
         tokens.push({ text, isWord: /^[A-Za-z]/.test(text) });
       }
       return tokens;
-    }
-
-    const uncoveredGameWords = new Set([
-      "a", "an", "the", "of", "to", "in", "on", "at", "by", "for", "from", "with",
-      "as", "and", "or", "but"
-    ]);
-
-    function shouldKeepGameWordVisible(word) {
-      return uncoveredGameWords.has(String(word || "").toLowerCase());
-    }
-
-    function maskGameWord(word) {
-      const text = String(word || "");
-      if (text.length <= 1 || shouldKeepGameWordVisible(text)) return text;
-      return `${"_".repeat(Math.max(1, text.length - 1))}${text.slice(-1)}`;
     }
 
     function currentParagraph() {
@@ -2139,12 +2138,9 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
         const isRevealed = game.revealed[wordCounter] || (game.pass === 1 && wordCounter > game.wordIndex);
         const isCurrent = wordCounter === game.wordIndex;
         if (game.pass === 1) {
-          return `<span class="game-word ${isCurrent ? "current" : ""}">${escapeHtml(token.text)}</span>`;
+          return `<span class="game-word ${isCurrent ? "current" : ""}" data-lookup-word="${escapeAttr(token.text)}">${escapeHtml(token.text)}</span>`;
         }
-        const keepVisible = shouldKeepGameWordVisible(token.text);
-        const isMasked = !isRevealed && !keepVisible;
-        const display = isMasked ? maskGameWord(token.text) : token.text;
-        return `<span class="game-word ${isMasked ? "pending" : ""} ${isCurrent ? "current" : ""}">${escapeHtml(display)}</span>`;
+        return `<span class="game-word ${isRevealed ? "" : "pending"} ${isCurrent ? "current" : ""}" data-lookup-word="${escapeAttr(token.text)}">${escapeHtml(token.text)}</span>`;
       }).join("");
       $("gameProgress").style.width = `${Math.round((game.wordIndex / game.words.length) * 100)}%`;
       renderChoices();
@@ -2352,6 +2348,65 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
       return original === original.toUpperCase() ? letter.toUpperCase() : letter;
     }
 
+    let lookupPressTimer = null;
+    let lookupWordElement = null;
+
+    function getLookupWordElement(target) {
+      return target && target.closest ? target.closest("[data-lookup-word]") : null;
+    }
+
+    function clearLookupSelection() {
+      clearTimeout(lookupPressTimer);
+      lookupPressTimer = null;
+      if (lookupWordElement) lookupWordElement.classList.remove("lookup-selected");
+      lookupWordElement = null;
+      const selection = window.getSelection ? window.getSelection() : null;
+      if (selection && selection.rangeCount) selection.removeAllRanges();
+    }
+
+    function selectLookupWord(element) {
+      if (!element) return;
+      if (lookupWordElement) lookupWordElement.classList.remove("lookup-selected");
+      lookupWordElement = element;
+      lookupWordElement.classList.add("lookup-selected");
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      const selection = window.getSelection ? window.getSelection() : null;
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      showToast("已选中单词，可点iOS查询");
+    }
+
+    function beginLookupPress(event) {
+      const word = getLookupWordElement(event.target);
+      if (!word) {
+        clearLookupSelection();
+        return;
+      }
+      clearTimeout(lookupPressTimer);
+      lookupPressTimer = setTimeout(() => selectLookupWord(word), 3000);
+    }
+
+    function cancelLookupPress() {
+      clearTimeout(lookupPressTimer);
+      lookupPressTimer = null;
+    }
+
+    function bindLookupEvents() {
+      document.addEventListener("pointerdown", beginLookupPress, { passive: true });
+      document.addEventListener("pointerup", cancelLookupPress, { passive: true });
+      document.addEventListener("pointercancel", cancelLookupPress, { passive: true });
+      document.addEventListener("scroll", cancelLookupPress, true);
+      document.addEventListener("selectionchange", () => {
+        const selection = window.getSelection ? window.getSelection() : null;
+        if (!selection || selection.rangeCount) return;
+        if (lookupWordElement) lookupWordElement.classList.remove("lookup-selected");
+        lookupWordElement = null;
+      });
+    }
+
     function bindEvents() {
       $("applyTextBtn").addEventListener("click", () => {
         loadText($("textInput").value);
@@ -2448,6 +2503,7 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
           setFocusGameMode(false);
         }
       });
+      bindLookupEvents();
     }
 
     let savedTheme = "dark";
