@@ -646,23 +646,7 @@
       padding: 0 4px;
       border-radius: 5px;
       cursor: pointer;
-      -webkit-touch-callout: default;
-      -webkit-user-select: text;
-      user-select: text;
       transition: background .12s ease, color .12s ease;
-    }
-
-    [data-lookup-word] {
-      -webkit-touch-callout: default;
-      -webkit-user-select: text;
-      user-select: text;
-    }
-
-    .lookup-selected {
-      outline: 2px solid var(--amber);
-      outline-offset: 2px;
-      background: var(--amber-soft) !important;
-      color: var(--ink) !important;
     }
 
     .word.hidden {
@@ -753,15 +737,14 @@
       border-radius: 5px;
       background: #fff;
       border: 1px solid var(--line);
-      -webkit-touch-callout: default;
-      -webkit-user-select: text;
-      user-select: text;
     }
 
     .game-word.pending {
       min-width: 34px;
-      color: transparent;
+      color: var(--muted);
       background: #dbe4ee;
+      letter-spacing: .08em;
+      font-weight: 800;
     }
 
     .game-word.current {
@@ -1246,6 +1229,9 @@
 
     body.light-mode.focus-game .game-word.pending {
       background: #d9e1ea;
+      color: #334155;
+      -webkit-text-fill-color: #334155;
+      text-shadow: none;
     }
 
     body.light-mode.focus-game .choice {
@@ -1577,6 +1563,7 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
 [00:40.00]Soon Tom knows that a new place can become familiar step by step.`;
 
     const $ = (id) => document.getElementById(id);
+    const progressStorageKey = "reciteStudyProgressV1";
 
     function showToast(message) {
       const toast = $("toast");
@@ -1584,6 +1571,75 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
       toast.classList.add("show");
       clearTimeout(showToast.timer);
       showToast.timer = setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function readStudyProgress() {
+      try {
+        return JSON.parse(localStorage.getItem(progressStorageKey) || "null");
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function getActiveSpeed() {
+      const activeSpeed = document.querySelector(".speed-btn.active[data-speed]");
+      const rate = activeSpeed ? Number(activeSpeed.dataset.speed) : $("audio").playbackRate || 1;
+      return Number.isFinite(rate) ? rate : 1;
+    }
+
+    function saveStudyProgress() {
+      if (!state.courseKey || !state.paragraphs.length) return;
+      const progress = {
+        courseKey: state.courseKey,
+        lesson: state.lesson,
+        currentParagraph: state.currentParagraph,
+        currentSentence: state.currentSentence,
+        mode: state.mode,
+        speed: getActiveSpeed(),
+        passed: [...state.passed],
+        updatedAt: Date.now()
+      };
+      try {
+        localStorage.setItem(progressStorageKey, JSON.stringify(progress));
+      } catch (error) {}
+    }
+
+    function applyModeButtonState() {
+      document.querySelectorAll(".mode-btn[data-mode]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.mode === state.mode);
+      });
+      const gameBtn = $("gameModeBtn");
+      if (gameBtn) gameBtn.classList.remove("active");
+    }
+
+    function applySpeed(rate) {
+      const speed = Number(rate);
+      if (!Number.isFinite(speed)) return;
+      $("audio").playbackRate = speed;
+      document.querySelectorAll(".speed-btn[data-speed]").forEach(btn => {
+        btn.classList.toggle("active", Number(btn.dataset.speed) === speed);
+      });
+    }
+
+    function applyStudyProgress(progress) {
+      if (!progress || progress.courseKey !== state.courseKey || !state.paragraphs.length) return false;
+      const paragraphIndex = Math.min(
+        Math.max(0, Number(progress.currentParagraph) || 0),
+        state.paragraphs.length - 1
+      );
+      const sentenceMax = Math.max(0, state.paragraphs[paragraphIndex].sentences.length - 1);
+      state.currentParagraph = paragraphIndex;
+      state.currentSentence = Math.min(Math.max(0, Number(progress.currentSentence) || 0), sentenceMax);
+      if (["full", "half", "initial"].includes(progress.mode)) state.mode = progress.mode;
+      state.passed.clear();
+      if (Array.isArray(progress.passed)) {
+        progress.passed.forEach(key => {
+          if (/^\d+-\d+$/.test(String(key))) state.passed.add(String(key));
+        });
+      }
+      applyModeButtonState();
+      applySpeed(progress.speed);
+      return true;
     }
 
     function uniqueList(items) {
@@ -1608,17 +1664,17 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
       };
     }
 
-    async function selectLesson(value) {
+    async function selectLesson(value, options = {}) {
       const course = parseCourseInput(value);
       state.lesson = course.lessonNumber;
       state.courseKey = course.inputValue;
       $("lessonNumber").value = course.inputValue;
       $("lessonTitle").textContent = `Lesson ${course.lessonNumber}`;
       $("lessonSub").textContent = "正在调取课文、音频和LRC";
-      await tryLoadLessonFiles(course);
+      await tryLoadLessonFiles(course, options);
     }
 
-    async function tryLoadLessonFiles(course) {
+    async function tryLoadLessonFiles(course, options = {}) {
       let loaded = false;
       state.lrc = [];
       renderLrc();
@@ -1631,7 +1687,10 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
         if (text.trim()) {
           const parsed = parseNce3Text(text);
           $("textInput").value = parsed.body;
-          loadText(parsed.body, parsed);
+          const restoreProgress = options.restoreProgress && options.restoreProgress.courseKey === course.inputValue
+            ? options.restoreProgress
+            : null;
+          loadText(parsed.body, parsed, { restoreProgress, skipSave: Boolean(restoreProgress) });
           loaded = true;
         }
       } catch (error) {}
@@ -1774,7 +1833,7 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
       return (parts || [paragraph]).map(s => s.trim()).filter(Boolean);
     }
 
-    function loadText(text, meta = null) {
+    function loadText(text, meta = null, options = {}) {
       state.rawText = text.trim();
       state.sourceText = meta?.fullText || text;
       if (meta) {
@@ -1802,7 +1861,9 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
         $("lessonTitle").textContent = `${state.lessonMeta.lessonLine || `Lesson ${state.lesson}`} · ${state.lessonMeta.englishTitle}`;
         $("lessonSub").textContent = state.lessonMeta.chineseTitle || "已提取英文正文用于背诵";
       }
+      applyStudyProgress(options.restoreProgress);
       renderAll();
+      if (!options.skipSave) saveStudyProgress();
       showToast("课文已载入");
     }
 
@@ -1859,6 +1920,7 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
           state.game.active = false;
           renderAll();
           syncAudioToCurrentSentence();
+          saveStudyProgress();
         });
         box.appendChild(btn);
       });
@@ -1879,6 +1941,7 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
           state.game.active = false;
           renderAll();
           syncAudioToCurrentSentence();
+          saveStudyProgress();
         });
         box.appendChild(btn);
       });
@@ -1909,6 +1972,7 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
           updateCurrentInfo();
           renderSentenceTabs();
           syncAudioToCurrentSentence();
+          saveStudyProgress();
         });
       });
     }
@@ -1926,7 +1990,7 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
         }
         if (mode === "full") cls += " revealed";
         const title = isCurrent ? "当前句" : "";
-        return `<span class="${cls}" data-word="${escapeAttr(token.text)}" data-lookup-word="${escapeAttr(token.text)}" title="${title}">${escapeHtml(display)}</span>`;
+        return `<span class="${cls}" data-word="${escapeAttr(token.text)}" title="${title}">${escapeHtml(display)}</span>`;
       }).join("");
     }
 
@@ -1939,6 +2003,21 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
         tokens.push({ text, isWord: /^[A-Za-z]/.test(text) });
       }
       return tokens;
+    }
+
+    const uncoveredGameWords = new Set([
+      "a", "an", "the", "of", "to", "in", "on", "at", "by", "for", "from", "with",
+      "as", "and", "or", "but"
+    ]);
+
+    function shouldKeepGameWordVisible(word) {
+      return uncoveredGameWords.has(String(word || "").toLowerCase());
+    }
+
+    function maskGameWord(word) {
+      const text = String(word || "");
+      if (text.length <= 1 || shouldKeepGameWordVisible(text)) return text;
+      return `${"_".repeat(Math.max(1, text.length - 1))}${text.slice(-1)}`;
     }
 
     function currentParagraph() {
@@ -2088,6 +2167,7 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
           renderSentenceTabs();
           renderReader();
           updateCurrentInfo();
+          saveStudyProgress();
           return;
         }
         cursor += sentenceCount;
@@ -2138,9 +2218,12 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
         const isRevealed = game.revealed[wordCounter] || (game.pass === 1 && wordCounter > game.wordIndex);
         const isCurrent = wordCounter === game.wordIndex;
         if (game.pass === 1) {
-          return `<span class="game-word ${isCurrent ? "current" : ""}" data-lookup-word="${escapeAttr(token.text)}">${escapeHtml(token.text)}</span>`;
+          return `<span class="game-word ${isCurrent ? "current" : ""}">${escapeHtml(token.text)}</span>`;
         }
-        return `<span class="game-word ${isRevealed ? "" : "pending"} ${isCurrent ? "current" : ""}" data-lookup-word="${escapeAttr(token.text)}">${escapeHtml(token.text)}</span>`;
+        const keepVisible = shouldKeepGameWordVisible(token.text);
+        const isMasked = !isRevealed && !keepVisible;
+        const display = isMasked ? maskGameWord(token.text) : token.text;
+        return `<span class="game-word ${isMasked ? "pending" : ""} ${isCurrent ? "current" : ""}">${escapeHtml(display)}</span>`;
       }).join("");
       $("gameProgress").style.width = `${Math.round((game.wordIndex / game.words.length) * 100)}%`;
       renderChoices();
@@ -2199,6 +2282,7 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
     function markSentencePassed() {
       state.passed.add(`${state.currentParagraph}-${state.currentSentence}`);
       renderStats();
+      saveStudyProgress();
     }
 
     function moveSentence(delta, autoStartGame = false) {
@@ -2226,6 +2310,7 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
       state.game.active = false;
       renderAll();
       syncAudioToCurrentSentence(false);
+      saveStudyProgress();
       if (autoStartGame) setTimeout(() => startGame(1), 250);
     }
 
@@ -2348,65 +2433,6 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
       return original === original.toUpperCase() ? letter.toUpperCase() : letter;
     }
 
-    let lookupPressTimer = null;
-    let lookupWordElement = null;
-
-    function getLookupWordElement(target) {
-      return target && target.closest ? target.closest("[data-lookup-word]") : null;
-    }
-
-    function clearLookupSelection() {
-      clearTimeout(lookupPressTimer);
-      lookupPressTimer = null;
-      if (lookupWordElement) lookupWordElement.classList.remove("lookup-selected");
-      lookupWordElement = null;
-      const selection = window.getSelection ? window.getSelection() : null;
-      if (selection && selection.rangeCount) selection.removeAllRanges();
-    }
-
-    function selectLookupWord(element) {
-      if (!element) return;
-      if (lookupWordElement) lookupWordElement.classList.remove("lookup-selected");
-      lookupWordElement = element;
-      lookupWordElement.classList.add("lookup-selected");
-      const range = document.createRange();
-      range.selectNodeContents(element);
-      const selection = window.getSelection ? window.getSelection() : null;
-      if (selection) {
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-      showToast("已选中单词，可点iOS查询");
-    }
-
-    function beginLookupPress(event) {
-      const word = getLookupWordElement(event.target);
-      if (!word) {
-        clearLookupSelection();
-        return;
-      }
-      clearTimeout(lookupPressTimer);
-      lookupPressTimer = setTimeout(() => selectLookupWord(word), 3000);
-    }
-
-    function cancelLookupPress() {
-      clearTimeout(lookupPressTimer);
-      lookupPressTimer = null;
-    }
-
-    function bindLookupEvents() {
-      document.addEventListener("pointerdown", beginLookupPress, { passive: true });
-      document.addEventListener("pointerup", cancelLookupPress, { passive: true });
-      document.addEventListener("pointercancel", cancelLookupPress, { passive: true });
-      document.addEventListener("scroll", cancelLookupPress, true);
-      document.addEventListener("selectionchange", () => {
-        const selection = window.getSelection ? window.getSelection() : null;
-        if (!selection || selection.rangeCount) return;
-        if (lookupWordElement) lookupWordElement.classList.remove("lookup-selected");
-        lookupWordElement = null;
-      });
-    }
-
     function bindEvents() {
       $("applyTextBtn").addEventListener("click", () => {
         loadText($("textInput").value);
@@ -2458,18 +2484,17 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
       $("speedGroup").addEventListener("click", (event) => {
         const btn = event.target.closest("button[data-speed]");
         if (!btn) return;
-        $("audio").playbackRate = Number(btn.dataset.speed);
-        document.querySelectorAll(".speed-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
+        applySpeed(btn.dataset.speed);
         if (state.gameAudioLoop.active) syncSelectedPlaybackRate();
+        saveStudyProgress();
       });
       $("modeGroup").addEventListener("click", (event) => {
         const btn = event.target.closest("button[data-mode]");
         if (!btn) return;
         state.mode = btn.dataset.mode;
-        document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
+        applyModeButtonState();
         renderReader();
+        saveStudyProgress();
       });
       $("gameModeBtn").addEventListener("click", () => {
         document.querySelectorAll(".mode-btn").forEach(b => b.classList.remove("active"));
@@ -2503,7 +2528,6 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
           setFocusGameMode(false);
         }
       });
-      bindLookupEvents();
     }
 
     let savedTheme = "dark";
@@ -2514,7 +2538,11 @@ At the school gate, Tom meets a boy named Jack. Jack says hello and shows him th
     bindEvents();
     $("textInput").value = sampleText;
     state.lrc = parseLrc(sampleLrc);
-    selectLesson("III-01").catch(() => loadText(sampleText));
+    const savedProgress = readStudyProgress();
+    const initialCourse = savedProgress?.courseKey || "III-01";
+    selectLesson(initialCourse, { restoreProgress: savedProgress }).catch(() => {
+      loadText(sampleText, null, { restoreProgress: savedProgress });
+    });
   </script>
 </body>
 </html>
