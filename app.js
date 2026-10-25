@@ -19,11 +19,17 @@ lessonSelect.innerHTML=Object.entries(lessons).map(([number,lesson])=>`<option v
 let currentLesson=1;
 function openLesson(number){
   if(!lessons[number])return;
+  if(number>1&&!window.HAS_PRIVATE_LESSONS){
+    lessonSelect.value=String(currentLesson);
+    window.promptLessonLogin(number);
+    return;
+  }
   audio.pause();
   currentLesson=number;
   ({lines,words,notes}=lessons[number]);
   selected=null;
-  audio.crossOrigin="use-credentials";audio.src=`${window.LINGUIST_API_ORIGIN}/api/audio/${number}`;
+  if(number===1){audio.removeAttribute('crossorigin');audio.src='sample/lesson1.mp3'}
+  else{audio.crossOrigin='use-credentials';audio.src=`${window.LINGUIST_API_ORIGIN}/api/audio/${number}`}
   audio.load();
   loadLessonLrc(number, lines);
   audio.playbackRate=Number(document.querySelector('[data-speed].selected')?.dataset.speed||1);
@@ -88,11 +94,15 @@ audio.addEventListener('play',()=>{playButton.textContent='Ⅱ';playButton.setAt
 audio.addEventListener('pause',()=>{playButton.textContent='▶';playButton.setAttribute('aria-label','再生')});
 let savedLesson=1;
 try{savedLesson=Number(localStorage.getItem('kotoba-last-lesson'))||1}catch{}
-openLesson(lessons[savedLesson]?savedLesson:1);
+const requestedLesson=Number(new URLSearchParams(location.search).get('lesson'));
+const initialLesson=lessons[requestedLesson]?requestedLesson:lessons[savedLesson]?savedLesson:1;
+openLesson(1);
+if(initialLesson!==1)openLesson(initialLesson);
 
 async function loadLessonLrc(number, lessonLines) {
   try {
-    const response = await fetch(`${window.LINGUIST_API_ORIGIN}/api/lrc/${number}`, {credentials: 'include', cache: 'no-store'});
+    const url = number===1 ? 'sample/lesson1.lrc' : `${window.LINGUIST_API_ORIGIN}/api/lrc/${number}`;
+    const response = await fetch(url, {credentials: number===1 ? 'same-origin' : 'include', cache: 'no-store'});
     if (!response.ok) return;
     const lrc = await response.text();
     const stamps = [...lrc.matchAll(/^\[(\d+):(\d+(?:\.\d+)?)\](.*)$/gm)]

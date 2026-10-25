@@ -1,0 +1,290 @@
+[
+  {
+    "number": 1,
+    "title": "ジュブナイル",
+    "titleZh": "初生牛犊",
+    "printedStart": 1,
+    "printedEnd": 13,
+    "ocrStatus": "draft",
+    "sceneStatus": "page-checked"
+  },
+  {
+    "number": 2,
+    "title": "千と千尋の神隠し（一）",
+    "titleZh": "千与千寻（一）",
+    "printedStart": 14,
+    "printedEnd": 25,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 3,
+    "title": "いこうかもどろうか",
+    "titleZh": "归宿何方",
+    "printedStart": 26,
+    "printedEnd": 38,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 4,
+    "title": "プリンスと海賊",
+    "titleZh": "公主与海盗",
+    "printedStart": 39,
+    "printedEnd": 50,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 5,
+    "title": "蚊チューシャ（一）",
+    "titleZh": "蚊子唤吸器（一）",
+    "printedStart": 51,
+    "printedEnd": 63,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 6,
+    "title": "蚊チューシャ（二）",
+    "titleZh": "蚊子唤吸器（二）",
+    "printedStart": 64,
+    "printedEnd": 75,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 7,
+    "title": "千と千尋の神隠し（二）",
+    "titleZh": "千与千寻（二）",
+    "printedStart": 76,
+    "printedEnd": 87,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 8,
+    "title": "千と千尋の神隠し（三）",
+    "titleZh": "千与千寻（三）",
+    "printedStart": 88,
+    "printedEnd": 99,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 9,
+    "title": "ケチャップ",
+    "titleZh": "番茄酱",
+    "printedStart": 100,
+    "printedEnd": 114,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 10,
+    "title": "千と千尋の神隠し（四）",
+    "titleZh": "千与千寻（四）",
+    "printedStart": 115,
+    "printedEnd": 125,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 11,
+    "title": "赤ひげ（一）",
+    "titleZh": "红胡子（一）",
+    "printedStart": 126,
+    "printedEnd": 139,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 12,
+    "title": "学校",
+    "titleZh": "学校",
+    "printedStart": 140,
+    "printedEnd": 152,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 13,
+    "title": "ルパン三世・カリオストロの城",
+    "titleZh": "卢潘三世·卡里奥斯托罗城堡",
+    "printedStart": 153,
+    "printedEnd": 164,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 14,
+    "title": "風と共に去りぬ",
+    "titleZh": "飘",
+    "printedStart": 165,
+    "printedEnd": 177,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 15,
+    "title": "値打ちのある猫",
+    "titleZh": "有价值的猫",
+    "printedStart": 178,
+    "printedEnd": 190,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 16,
+    "title": "男はつらいよ（一）",
+    "titleZh": "寅次郎的故事（一）",
+    "printedStart": 191,
+    "printedEnd": 203,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 17,
+    "title": "里見八犬伝（一）",
+    "titleZh": "里见八犬传（一）",
+    "printedStart": 204,
+    "printedEnd": 215,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 18,
+    "title": "男はつらいよ（二）",
+    "titleZh": "寅次郎的故事（二）",
+    "printedStart": 216,
+    "printedEnd": 228,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 19,
+    "title": "男はつらいよ（三）",
+    "titleZh": "寅次郎的故事（三）",
+    "printedStart": 229,
+    "printedEnd": 241,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 20,
+    "title": "咲夜",
+    "titleZh": "暗夜之花",
+    "printedStart": 242,
+    "printedEnd": 254,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 21,
+    "title": "トム・ソーヤーの冒険",
+    "titleZh": "汤姆·索耶历险记",
+    "printedStart": 255,
+    "printedEnd": 266,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 22,
+    "title": "赤ひげ（二）",
+    "titleZh": "红胡子（二）",
+    "printedStart": 267,
+    "printedEnd": 278,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 23,
+    "title": "八月の狂詩曲",
+    "titleZh": "八月狂想曲",
+    "printedStart": 279,
+    "printedEnd": 290,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 24,
+    "title": "用心棒（一）",
+    "titleZh": "保镖（一）",
+    "printedStart": 291,
+    "printedEnd": 304,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 25,
+    "title": "鉄道員",
+    "titleZh": "铁路职员",
+    "printedStart": 305,
+    "printedEnd": 318,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 26,
+    "title": "（新）男はつらいよ（四）",
+    "titleZh": "（新）寅次郎的故事（四）",
+    "printedStart": 319,
+    "printedEnd": 332,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 27,
+    "title": "用心棒（二）",
+    "titleZh": "保镖（二）",
+    "printedStart": 333,
+    "printedEnd": 346,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 28,
+    "title": "里見八犬伝（二）",
+    "titleZh": "里见八犬传（二）",
+    "printedStart": 347,
+    "printedEnd": 359,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 29,
+    "title": "赤ひげ（三）",
+    "titleZh": "红胡子（三）",
+    "printedStart": 360,
+    "printedEnd": 373,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 30,
+    "title": "里見八犬伝（三）",
+    "titleZh": "里见八犬传（三）",
+    "printedStart": 374,
+    "printedEnd": 386,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 31,
+    "title": "（新）男はつらいよ（五）",
+    "titleZh": "（新）寅次郎的故事（五）",
+    "printedStart": 387,
+    "printedEnd": 400,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  },
+  {
+    "number": 32,
+    "title": "用心棒（三）",
+    "titleZh": "保镖（三）",
+    "printedStart": 401,
+    "printedEnd": 413,
+    "ocrStatus": "draft",
+    "sceneStatus": "ocr-draft"
+  }
+]
