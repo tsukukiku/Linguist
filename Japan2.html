@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ことばの道場｜中級日本語会話</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="一问三知：语学家 教材选择">ことばの<span>道場</span><small>← 一问三知：语学家</small></a>
+      <div class="book-tag">挑戦日本語会話 · 中級篇</div>
+    </header>
+
+    <main id="top">
+      <nav class="lesson-picker" aria-label="課を選ぶ">
+        <label for="lessonSelect">学習する課</label>
+        <button id="previousLesson" class="lesson-step" aria-label="前の課">‹</button>
+        <select id="lessonSelect" aria-label="学習する課"></select>
+        <button id="nextLesson" class="lesson-step" aria-label="次の課">›</button>
+        <span class="lesson-memory">最後に学習した課を自動で開きます</span>
+      </nav>
+      <section class="hero">
+        <div class="eyebrow"><span id="lessonNumber">LESSON 01</span> <span>／</span> 中級</div>
+        <h1 id="lessonTitle">負けず<ruby><em>嫌</em><rt>ぎら</rt></ruby>い</h1>
+        <p>会話を聴いて、読んで、確かめる。<br>一文ずつ、自分のペースで練習しましょう。</p>
+        <div class="hero-meta"><span>会話</span><span id="lessonSpeakers">中尾 × 中村</span><span id="lessonDuration">約2分14秒</span></div>
+      </section>
+
+      <div class="layout">
+        <div class="main-column">
+          <nav class="tabs" aria-label="学習メニュー">
+            <button class="tab active" data-tab="conversation" aria-selected="true">会話</button>
+            <button class="tab" data-tab="words" aria-selected="false">単語</button>
+            <button class="tab" data-tab="notes" aria-selected="false">解説</button>
+            <button class="tab" data-tab="translation" aria-selected="false">翻訳</button>
+          </nav>
+
+          <section class="panel active" id="conversation">
+            <div class="section-head"><div><span class="section-kicker">01 / LISTEN & READ</span><h2>会話</h2></div><p>文を押すと、その部分を再生します。</p></div>
+            <div class="toolbar"><button id="furiganaToggle" class="text-button" aria-pressed="true">ふりがなを隠す</button><button id="showAllTranslations" class="text-button" aria-pressed="false">訳をすべて表示</button></div>
+            <div id="lines" class="lines"></div>
+          </section>
+
+          <section class="panel" id="words">
+            <div class="section-head"><div><span class="section-kicker">02 / VOCABULARY</span><h2>単語</h2></div><p>本文に出てくることば</p></div>
+            <div id="wordList" class="word-list"></div>
+          </section>
+
+          <section class="panel" id="notes">
+            <div class="section-head"><div><span class="section-kicker">03 / LANGUAGE NOTES</span><h2>解説</h2></div><p>会話表現を中国語で説明します。</p></div>
+            <div id="noteList" class="note-list"></div>
+          </section>
+
+          <section class="panel" id="translation">
+            <div class="section-head"><div><span class="section-kicker">04 / CHINESE TRANSLATION</span><h2>翻訳</h2></div><p>会話の中国語訳</p></div>
+            <div id="translationList" class="translation-list"></div>
+          </section>
+        </div>
+
+        <aside class="sidebar">
+          <div class="player-card">
+            <div class="player-heading"><span class="player-icon">♪</span><div><small>LESSON AUDIO</small><strong id="audioTitle">第1課 音声</strong></div></div>
+            <div id="nowPlaying" class="now-playing">全体を再生</div>
+            <div class="progress-row"><span id="currentTime">0:00</span><input id="seek" type="range" min="0" max="134" value="0" aria-label="再生位置"><span id="duration">2:14</span></div>
+            <div class="player-actions"><button id="backButton" aria-label="5秒戻る">−5秒</button><button id="playButton" class="play-button" aria-label="再生">▶</button><button id="forwardButton" aria-label="5秒進む">+5秒</button></div>
+            <div class="speed-heading">再生速度</div><div class="speed-options" role="group" aria-label="再生速度"><button data-speed="0.6">0.6×</button><button data-speed="0.8">0.8×</button><button data-speed="1" class="selected">1.0×</button></div>
+            <button id="fullPlayback" class="full-playback">選択を解除して全体を再生 →</button>
+            <audio id="audio" preload="metadata"></audio>
+          </div>
+          <div class="tip-card"><span>使い方</span><p>文を選ぶと、その文だけを再生します。選択を解除すると、音声は最後まで続きます。</p></div>
+          <div class="source-card" id="sourceCard">原文：『挑战日语口语・中级篇』第1課<br>PDFの画像と音声を照合して作成</div>
+        </aside>
+      </div>
+    </main>
+    <footer>ことばの道場 <span>・</span> 第1〜16課</footer>
+  </div>
+  <script src="config.js"></script>
+  <script src="bootstrap.js"></script>
+</body>
+</html>
+
+
