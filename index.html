@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>一问三知: 语学家</title>
+  <style>
+    :root{font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif;color:#19352f;background:#f5f4ed}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:radial-gradient(circle at 90% 0%,#e2ede5 0,transparent 34%),#f5f4ed}
+    .page{max-width:1100px;margin:auto;padding:48px 28px 72px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid #cbd7cd;padding-bottom:23px}
+    .brand{font:700 19px/1.2 Georgia,serif;letter-spacing:.08em;color:#255e4a}
+    .brand span{display:block;margin-top:6px;font:500 11px/1.3 system-ui,sans-serif;letter-spacing:.18em;color:#82978a}
+    .header-note{color:#7a897d;font-size:12px;letter-spacing:.12em}
+    .hero{padding:58px 0 53px}
+    .eyebrow{font-size:11px;font-weight:700;letter-spacing:.23em;color:#46836a}
+    h1{margin:18px 0 15px;font-size:clamp(34px,5vw,58px);line-height:1.18;letter-spacing:.025em}
+    .hero p{margin:0;color:#698075;line-height:1.8;font-size:15px}
+    .section{margin-top:21px}
+    .section-head{display:flex;align-items:baseline;gap:15px;margin-bottom:18px}
+    .section-head h2{margin:0;font-size:22px;letter-spacing:.04em}
+    .section-head span{font-size:11px;letter-spacing:.2em;color:#9aac9f}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+    .card{min-height:185px;padding:23px;border:1px solid #d4dfd5;border-radius:13px;background:#fff;display:flex;flex-direction:column;justify-content:space-between;text-decoration:none;color:#203d34;box-shadow:0 5px 20px rgba(28,69,49,.035)}
+    .card .number{font:600 12px/1.2 Georgia,serif;color:#77a68b;letter-spacing:.1em}
+    .card h3{font-size:19px;line-height:1.35;margin:20px 0 7px}
+    .card .subtitle{font-size:12px;color:#83978a}
+    .card .foot{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#438469}
+    a.card{transition:transform .18s,box-shadow .18s,border-color .18s}
+    a.card:hover,a.card:focus-visible{transform:translateY(-4px);border-color:#79aa8d;box-shadow:0 13px 30px rgba(28,69,49,.11);outline:none}
+    .disabled{background:#ebeee9;border-color:#e2e7e0;color:#88958b;box-shadow:none;cursor:default}
+    .disabled .number,.disabled .subtitle,.disabled .foot{color:#a0aca2}
+    .japanese{margin-top:58px}
+    .japanese .card{border-top:3px solid #71a286}
+    .japanese .disabled{border-top-color:#cbd5cb}
+    footer{margin-top:80px;border-top:1px solid #d5ded5;padding-top:25px;color:#a1afa3;font-size:12px;text-align:center}
+    @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:520px){.page{padding:28px 18px 44px}.hero{padding:44px 0 34px}.hero p{font-size:14px}.grid{grid-template-columns:1fr}.card{min-height:138px}.section-head h2{font-size:20px}.japanese{margin-top:45px}.header-note{display:none}footer{margin-top:55px}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header><div class="brand">LINGUIST<span>LANGUAGE LEARNING</span></div><div class="header-note">ことばを、毎日の力に。</div></header>
+    <main>
+      <div class="hero"><div class="eyebrow">LEARN · LISTEN · RECITE</div><h1>一问三知: 语学家</h1><p>选择教材，进入对应的学习页面。</p></div>
+      <section class="section" aria-labelledby="english-title">
+        <div class="section-head"><h2 id="english-title">英语学习</h2><span>ENGLISH</span></div>
+        <div class="grid">
+          <div class="card disabled" aria-disabled="true"><div><div class="number">01 / BOOK</div><h3>新概念第一册</h3><div class="subtitle">New Concept English</div></div><div class="foot">准备中</div></div>
+          <div class="card disabled" aria-disabled="true"><div><div class="number">02 / BOOK</div><h3>新概念第二册</h3><div class="subtitle">New Concept English</div></div><div class="foot">准备中</div></div>
+          <a class="card" href="../Linguist/Engrecite.html" aria-label="打开新概念第三册"><div><div class="number">03 / BOOK</div><h3>新概念第三册</h3><div class="subtitle">快速背诵助手</div></div><div class="foot"><span>开始学习</span><span aria-hidden="true">↗</span></div></a>
+          <div class="card disabled" aria-disabled="true"><div><div class="number">04 / BOOK</div><h3>新概念第四册</h3><div class="subtitle">New Concept English</div></div><div class="foot">准备中</div></div>
+        </div>
+      </section>
+      <section class="section japanese" aria-labelledby="japanese-title">
+        <div class="section-head"><h2 id="japanese-title">日语学习</h2><span>JAPANESE</span></div>
+        <div class="grid">
+          <div class="card disabled" aria-disabled="true"><div><div class="number">01 / LEVEL</div><h3>挑战日语口语 · 初级</h3><div class="subtitle">会話練習</div></div><div class="foot">准备中</div></div>
+          <a class="card" href="../Linguist/" aria-label="打开挑战日语口语中级"><div><div class="number">02 / LEVEL</div><h3>挑战日语口语 · 中级</h3><div class="subtitle">全16课 · 会話・単語・解説</div></div><div class="foot"><span>开始学习</span><span aria-hidden="true">↗</span></div></a>
+          <div class="card disabled" aria-disabled="true"><div><div class="number">03 / LEVEL</div><h3>挑战日语口语 · 高级</h3><div class="subtitle">会話練習</div></div><div class="foot">准备中</div></div>
+          <div class="card disabled" aria-disabled="true"><div><div class="number">04 / LISTENING</div><h3>电影对白</h3><div class="subtitle">映画のせりふ</div></div><div class="foot">准备中</div></div>
+        </div>
+      </section>
+    </main>
+    <footer>LINGUIST · 英语与日语学习</footer>
+  </div>
+</body>
+</html>
+
