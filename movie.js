@@ -9,11 +9,11 @@
   const notice=document.getElementById('lessonNotice');
   const actions=document.getElementById('lessonActions');
   const get=async url=>{const response=await fetch(url,{credentials:'include',cache:'no-store',redirect:'manual'});if(!response.ok)throw Error(String(response.status));return response.json()};
-  let index,sample,privateLessons;
+  let index,sample,privateLessons,privateStatus;
   try{[index,sample]=await Promise.all([get('sample/movie-index.json'),get('sample/movie-lesson1.json')]);}
   catch{status.textContent='目录载入失败，请刷新页面。';return}
-  try{privateLessons=await get(`${api}/api/movie/lessons`)}catch{privateLessons=null}
-  status.textContent='共 32 课。第 1 课可试读；后续课程需要授权登录。';
+  try{privateLessons=await get(`${api}/api/movie/lessons`)}catch(error){privateLessons=null;privateStatus=error.message}
+  status.textContent=privateStatus==='404'?'共 32 课。第 1 课可试读；后续课程的 NAS 文本尚未部署。':'共 32 课。第 1 课可试读；后续课程需要授权登录。';
   const show=n=>{
     const item=index[n-1];
     if(!item)return;
@@ -25,11 +25,13 @@
     if(!lesson?.scene){
       text.hidden=true;
       notice.hidden=false;
-      notice.textContent='第 2 课以后需要授权登录，才能查看对白。';
-      const a=document.createElement('a');
-      const back=new URL(location.href);back.searchParams.set('lesson',String(n));
-      a.href=`${api}/auth?return=${encodeURIComponent(back.href)}`;
-      a.className='button';a.textContent='使用邮箱登录';actions.append(a);
+      notice.textContent=privateStatus==='404'?'电影册课文尚未部署到 NAS，请稍后再试。':'第 2 课以后需要授权登录，才能查看对白。';
+      if(privateStatus!=='404'){
+        const a=document.createElement('a');
+        const back=new URL(location.href);back.searchParams.set('lesson',String(n));
+        a.href=`${api}/auth?return=${encodeURIComponent(back.href)}`;
+        a.className='button';a.textContent='使用邮箱登录';actions.append(a);
+      }
     }else{
       text.hidden=false;notice.hidden=false;
       notice.textContent=n===1?'第 1 课对白已对照扫描页整理；LRC 时间尚未制作。':'OCR 草稿：文字尚未逐句校对，LRC 时间未制作。';
