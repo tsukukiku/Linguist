@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>快速背诵助手 · 新概念英语第二册</title>
+  <link rel="icon" type="image/png" href="site-icon-32.png">
+  <link rel="stylesheet" href="nce.css">
+
+
+</head>
+<body data-book="II">
+  <div id="nceAccess" class="nce-access" hidden>请用已授权邮箱登录后读取 NAS 教材。<a id="nceLogin" href="#">邮箱登录 →</a></div>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><img src="site-icon-32.png" alt=""></div>
+        <div>
+          <div class="title-row">
+            <h1>快速背诵助手</h1>
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="切换白天黑夜">
+              <img id="themeIcon" src="day.png" alt="">
+            </button>
+          </div>
+          <p class="muted">新概念英语第二册 · Speed Memorizer</p>
+        </div>
+      <div class="compact-toolbar">
+        <button class="toolbar-label" id="loadLessonLabel" type="button">课程号</button>
+        <input id="lessonNumber" type="text" value="II-01" aria-label="课程编号" inputmode="text">
+        <div class="utility-panel" id="settingsPanel">
+        <button class="settings-toggle" id="settingsToggle" type="button" aria-label="设置">
+          <img src="settings-icon.png" alt="">
+        </button>
+        <div class="utility-body">
+          <div class="file-strip">
+            <div class="mini-file">
+              <label for="txtFile">TXT课文</label>
+              <input id="txtFile" type="file" accept=".txt,text/plain">
+            </div>
+            <div class="mini-file">
+              <label for="mp3File">MP3音频</label>
+              <input id="mp3File" type="file" accept="audio/mpeg,audio/mp3,.mp3">
+            </div>
+            <div class="mini-file">
+              <label for="lrcFile">LRC字幕</label>
+              <input id="lrcFile" type="file" accept=".lrc,text/plain">
+            </div>
+          </div>
+          <div class="field">
+            <label for="textInput">手动粘贴课文</label>
+            <textarea id="textInput" placeholder="Paste English text here. Blank lines will become paragraphs."></textarea>
+          </div>
+          <div class="settings-actions">
+            <button class="btn-primary" id="applyTextBtn">添加</button>
+            <button class="btn-soft" id="sampleBtn">收起</button>
+          </div>
+        </div>
+      </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <div class="topbar">
+        <div>
+          <h1 id="lessonTitle">Lesson 1</h1>
+          <p class="muted" id="lessonSub">等待载入课文和音频</p>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <div>
+          <section class="section audio-panel">
+            <div class="player-row">
+              <audio id="audio" controls></audio>
+              <div class="speed-group" id="speedGroup" aria-label="播放速度">
+                <button class="speed-btn" data-speed="0.6">0.6</button>
+                <button class="speed-btn" data-speed="0.8">0.8</button>
+                <button class="speed-btn active" data-speed="1">1.0</button>
+                <button class="speed-btn" data-speed="1.2">1.2</button>
+              </div>
+            </div>
+            <div class="lrc-box" id="lrcBox" style="margin-top:10px">
+              <div class="lrc-line active">LRC会在这里按句显示</div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="row" style="justify-content:space-between">
+              <div>
+                <div class="section-title-line">
+                  <h2>逐句背诵</h2>
+                  <div class="stats">
+                    <div class="stat"><b id="sentenceCount">0</b><span>句子</span></div>
+                    <div class="stat"><b id="passCount">0</b><span>过关</span></div>
+                  </div>
+                </div>
+                <p class="muted" id="currentMeta">先载入课文</p>
+              </div>
+              <div class="row">
+                <button class="btn-soft" id="prevSentenceBtn">上一句</button>
+                <button class="btn-soft" id="nextSentenceBtn">下一句</button>
+              </div>
+            </div>
+            <div class="paragraph-tabs" id="paragraphTabs"></div>
+            <div class="sentence-list" id="sentenceTabs"></div>
+            <div class="mode-group" id="modeGroup" style="margin:6px 0">
+              <button class="mode-btn active" data-mode="full">全显示</button>
+              <button class="mode-btn" data-mode="half">随机覆盖</button>
+              <button class="mode-btn" data-mode="initial">首字母</button>
+              <button class="mode-btn" id="gameModeBtn" type="button">游戏</button>
+            </div>
+            <div id="reader" class="reader empty-tip">请从左侧载入课文。</div>
+          </section>
+        </div>
+
+        <div>
+          <section class="section game-section" id="gameSection">
+            <div class="game-header">
+              <h2>背诵游戏</h2>
+              <div class="game-top-actions">
+                <button class="btn-teal" id="repeatAudioBtn">听本句</button>
+                <button class="btn-amber" id="restartSentenceBtn">重来</button>
+                <button class="btn-rose" id="skipSentenceBtn">下一句</button>
+                <button class="btn-soft" id="focusGameBtn">专注模式</button>
+              </div>
+            </div>
+            <div class="game-card">
+              <div class="row" style="justify-content:space-between">
+                <p class="muted" id="gameStage">第一遍：看全句，点击每个词的正确首字母</p>
+                <button class="btn-green" id="startGameBtn">开始本句</button>
+              </div>
+              <div class="progress"><span id="gameProgress"></span></div>
+              <div class="focus-current-sentence" id="focusCurrentSentence">暂无</div>
+              <div id="gameSentence" class="game-sentence">选择一句后开始。</div>
+              <div class="game-button-strip">
+                <div id="choices" class="choice-row"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <h2>当前句</h2>
+            <p class="muted" id="currentSentenceText">暂无</p>
+          </section>
+        </div>
+      </div>
+      <section class="section reference-panel">
+        <details>
+          <summary>生词和短语</summary>
+          <div class="reference-body" id="wordsPanel">载入课文后显示。</div>
+        </details>
+        <details>
+          <summary>参考译文</summary>
+          <div class="reference-body" id="translationPanel">载入课文后显示。</div>
+        </details>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="config.js"></script>
+  <script src="nce.js"></script>
+<a class="sss-gateway-home sss-gateway-home-floating" href="index.html" aria-label="返回教材选择页"><span aria-hidden="true">←</span>教材选择</a>
+</body>
+</html>
