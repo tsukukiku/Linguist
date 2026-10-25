@@ -1,0 +1,6 @@
+.login-notice{display:none;position:fixed;inset:0;z-index:1000;background:#f8f6f1;color:#262621;padding:18vh 24px 24px;text-align:center;font-family:system-ui,sans-serif}
+.login-notice.visible{display:block}
+.login-notice strong{font-size:1.3rem}
+.login-notice p{margin:20px auto;max-width:32rem;line-height:1.7}
+.login-notice a{display:inline-block;padding:14px 22px;background:#275c4b;color:white;border-radius:9px;text-decoration:none}
+
