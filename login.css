@@ -3,4 +3,5 @@
 .login-notice strong{font-size:1.3rem}
 .login-notice p{margin:20px auto;max-width:32rem;line-height:1.7}
 .login-notice a{display:inline-block;padding:14px 22px;background:#275c4b;color:white;border-radius:9px;text-decoration:none}
+.login-notice button{display:block;margin:18px auto 0;padding:10px 16px;border:0;background:transparent;color:#275c4b;font:inherit;text-decoration:underline;cursor:pointer}
 
