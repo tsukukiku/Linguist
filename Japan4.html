@@ -1,3 +1,59 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>挑战日语口语 · 电影对白｜语学家</title><link rel="stylesheet" href="course-index.css"><script src="config.js" defer></script><script src="movie.js" defer></script></head>
-<body><main class="page"><a class="back" href="index.html">← 一问三知：语学家</a><p class="eyebrow">JAPANESE · BOOK 04</p><h1>电影对白 · 对话 · 解说 · 翻译</h1><p>从 32 课目录中选择一课。扫描文本正在校对；LRC 时间暂为零，请以原书和录音为准。</p><div id="status" class="status" role="status">正在载入目录…</div><div id="lessonGrid" class="lesson-grid" aria-label="电影对白课目"></div><section id="lessonPanel" hidden><h2 id="lessonTitle"></h2><p id="lessonMeta" class="status"></p><div id="lessonNotice" class="notice" hidden></div><div id="lessonActions" class="actions"></div><div id="lessonText" class="reader"></div></section></main></body></html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>电影对白 · 对话 · 解说 · 翻译｜语学家</title>
+  <link rel="stylesheet" href="course-index.css">
+  <link rel="stylesheet" href="movie.css">
+  <script src="config.js" defer></script>
+  <script src="movie.js" defer></script>
+</head>
+<body>
+  <main class="page movie-page">
+    <a class="back" href="index.html">← 一问三知：语学家</a>
+    <p class="eyebrow">JAPANESE · MOVIE DIALOGUE</p>
+    <h1>电影对白 · 对话 · 解说 · 翻译</h1>
+    <p class="lead">按原书的四个部分学习：听シナリオ、读日文对话，再看解说与翻译。第 1 课可直接试学；后续课程需要邮箱登录。</p>
+    <div id="status" class="status" role="status">正在载入课程…</div>
+
+    <section id="lessonPanel" class="movie-lesson" hidden aria-labelledby="lessonTitle">
+      <div class="lesson-heading">
+        <div><p class="eyebrow">CURRENT LESSON</p><h2 id="lessonTitle"></h2><p id="lessonMeta" class="status"></p></div>
+        <div class="lesson-nav"><button id="previousLesson" type="button">上一课</button><button id="nextLesson" type="button">下一课</button></div>
+      </div>
+      <div id="lessonNotice" class="notice" hidden></div>
+      <div id="loginActions" class="actions"></div>
+
+      <div id="lessonBody">
+        <div class="audio-grid">
+          <div class="audio-card"><strong>① シナリオ录音</strong><small id="scenarioTrack"></small><audio id="scenarioAudio" controls preload="none"></audio></div>
+          <div class="audio-card"><strong>② 教材附加录音</strong><small id="lessonTrack"></small><audio id="lessonAudio" controls preload="none"></audio></div>
+        </div>
+        <div class="section-nav" role="tablist" aria-label="课文部分">
+          <button type="button" role="tab" data-section="scenario">1 シナリオ</button>
+          <button type="button" role="tab" data-section="dialogue">2 对话</button>
+          <button type="button" role="tab" data-section="notes">3 解说</button>
+          <button type="button" role="tab" data-section="translation">4 翻译</button>
+        </div>
+        <div class="study-grid">
+          <section class="study-content" aria-live="polite">
+            <h3 id="sectionTitle"></h3>
+            <p id="sectionDescription"></p>
+            <div id="scenarioText" class="movie-reader"></div>
+            <p id="draftNotice" class="status"></p>
+          </section>
+          <section class="book-content" aria-labelledby="bookTitle">
+            <div class="book-heading"><h3 id="bookTitle">原书扫描页</h3><a id="openBook" target="_blank" rel="noopener">打开本课 PDF</a></div>
+            <p id="bookHint" class="status"></p>
+            <div class="scan-controls"><button id="previousPage" type="button">上一页</button><span id="pageNumber"></span><button id="nextPage" type="button">下一页</button></div>
+            <img id="bookImage" alt="本课原书扫描页">
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="course-list" aria-labelledby="courseListTitle"><h2 id="courseListTitle">全部 32 课</h2><div id="lessonGrid" class="lesson-grid"></div></section>
+  </main>
+</body>
+</html>
