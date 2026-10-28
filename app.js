@@ -69,6 +69,7 @@ function playLine(i){
   const l=lines[i];
   if(!hasRealTimes||!Number.isFinite(l.start)||!Number.isFinite(l.end)){document.getElementById('nowPlaying').textContent='音声位置を準備中';return}
   selected=i; audio.currentTime=l.start; audio.play();
+  if(lineFrame===null)lineFrame=requestAnimationFrame(watchLineEnd);
   document.getElementById('nowPlaying').textContent=`${String(i+1).padStart(2,'0')} / ${lines.length} · ${l.s}`;
   renderLines();
 }
@@ -89,9 +90,22 @@ document.getElementById('forwardButton').addEventListener('click',()=>{audio.cur
 document.querySelectorAll('[data-speed]').forEach(b=>b.addEventListener('click',()=>{audio.playbackRate=Number(b.dataset.speed);document.querySelectorAll('[data-speed]').forEach(x=>x.classList.toggle('selected',x===b))}));
 seek.addEventListener('input',()=>{selected=null;document.getElementById('nowPlaying').textContent='全体を再生';audio.currentTime=Number(seek.value);renderLines()});
 audio.addEventListener('loadedmetadata',()=>{seek.max=audio.duration;document.getElementById('duration').textContent=fmt(audio.duration);document.getElementById('lessonDuration').textContent=`約${fmt(audio.duration)}`});
-audio.addEventListener('timeupdate',()=>{seek.value=audio.currentTime;document.getElementById('currentTime').textContent=fmt(audio.currentTime);if(selected!==null&&audio.currentTime>=lines[selected].end){audio.pause();audio.currentTime=lines[selected].end}});
-audio.addEventListener('play',()=>{playButton.textContent='Ⅱ';playButton.setAttribute('aria-label','一時停止')});
-audio.addEventListener('pause',()=>{playButton.textContent='▶';playButton.setAttribute('aria-label','再生')});
+function stopAtLineEnd(){
+  if(selected===null || !lines[selected] || audio.currentTime<lines[selected].end)return false;
+  const end=lines[selected].end;
+  audio.pause();
+  audio.currentTime=end;
+  return true;
+}
+let lineFrame=null;
+function watchLineEnd(){
+  lineFrame=null;
+  if(audio.paused || stopAtLineEnd())return;
+  if(selected!==null)lineFrame=requestAnimationFrame(watchLineEnd);
+}
+audio.addEventListener('timeupdate',()=>{seek.value=audio.currentTime;document.getElementById('currentTime').textContent=fmt(audio.currentTime);stopAtLineEnd()});
+audio.addEventListener('play',()=>{playButton.textContent='Ⅱ';playButton.setAttribute('aria-label','一時停止');if(lineFrame===null&&selected!==null)lineFrame=requestAnimationFrame(watchLineEnd)});
+audio.addEventListener('pause',()=>{playButton.textContent='▶';playButton.setAttribute('aria-label','再生');if(lineFrame!==null){cancelAnimationFrame(lineFrame);lineFrame=null}});
 let savedLesson=1;
 try{savedLesson=Number(localStorage.getItem('kotoba-last-lesson'))||1}catch{}
 const requestedLesson=Number(new URLSearchParams(location.search).get('lesson'));
