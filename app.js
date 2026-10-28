@@ -83,13 +83,13 @@ document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{doc
 document.getElementById('furiganaToggle').addEventListener('click',e=>{let hidden=document.body.classList.toggle('hide-ruby');e.target.textContent=hidden?'ふりがなを表示':'ふりがなを隠す';e.target.setAttribute('aria-pressed',hidden?'false':'true')});
 document.getElementById('showAllTranslations').addEventListener('click',e=>{showAll=!showAll;e.target.textContent=showAll?'訳をすべて隠す':'訳をすべて表示';e.target.setAttribute('aria-pressed',String(showAll));renderLines()});
 document.getElementById('fullPlayback').addEventListener('click',()=>{selected=null;document.getElementById('nowPlaying').textContent='全体を再生';if(audio.duration&&audio.currentTime>=audio.duration-.1)audio.currentTime=0;audio.play();renderLines()});
-playButton.addEventListener('click',()=>{if(audio.paused){if(selected!==null&&audio.currentTime>=lines[selected].end-.08)audio.currentTime=lines[selected].start;audio.play()}else audio.pause()});
+playButton.addEventListener('click',()=>{if(audio.paused){if(selected!==null&&audio.currentTime>=lines[selected].end)audio.currentTime=lines[selected].start;audio.play()}else audio.pause()});
 document.getElementById('backButton').addEventListener('click',()=>{audio.currentTime=Math.max(0,audio.currentTime-5)});
 document.getElementById('forwardButton').addEventListener('click',()=>{audio.currentTime=Math.min(audio.duration||134,audio.currentTime+5)});
 document.querySelectorAll('[data-speed]').forEach(b=>b.addEventListener('click',()=>{audio.playbackRate=Number(b.dataset.speed);document.querySelectorAll('[data-speed]').forEach(x=>x.classList.toggle('selected',x===b))}));
 seek.addEventListener('input',()=>{selected=null;document.getElementById('nowPlaying').textContent='全体を再生';audio.currentTime=Number(seek.value);renderLines()});
 audio.addEventListener('loadedmetadata',()=>{seek.max=audio.duration;document.getElementById('duration').textContent=fmt(audio.duration);document.getElementById('lessonDuration').textContent=`約${fmt(audio.duration)}`});
-audio.addEventListener('timeupdate',()=>{seek.value=audio.currentTime;document.getElementById('currentTime').textContent=fmt(audio.currentTime);if(selected!==null&&audio.currentTime>=lines[selected].end-.06){audio.pause();audio.currentTime=lines[selected].end}});
+audio.addEventListener('timeupdate',()=>{seek.value=audio.currentTime;document.getElementById('currentTime').textContent=fmt(audio.currentTime);if(selected!==null&&audio.currentTime>=lines[selected].end){audio.pause();audio.currentTime=lines[selected].end}});
 audio.addEventListener('play',()=>{playButton.textContent='Ⅱ';playButton.setAttribute('aria-label','一時停止')});
 audio.addEventListener('pause',()=>{playButton.textContent='▶';playButton.setAttribute('aria-label','再生')});
 let savedLesson=1;
@@ -108,13 +108,18 @@ async function loadLessonLrc(number, lessonLines) {
     const stamps = [...lrc.matchAll(/^\[(\d+):(\d+(?:\.\d+)?)\](.*)$/gm)]
       .map(match => ({time: Number(match[1]) * 60 + Number(match[2]), text: match[3].trim()}));
     const dialogue = stamps.filter(item => item.text.includes('：') || item.text.includes(':'));
-    if (dialogue.length !== lessonLines.length || currentLesson !== number || lines !== lessonLines ||
+    if (dialogue.length !== lessonLines.length) {
+      console.warn(`第${number}課の LRC は ${dialogue.length} 行、教材データは ${lessonLines.length} 行です。NAS の lessons.json を更新し、linguist-api を再起動してください。`);
+      return;
+    }
+    if (currentLesson !== number || lines !== lessonLines ||
         dialogue.some((item, index) => !Number.isFinite(item.time) || item.time < 0 ||
           (index > 0 && item.time <= dialogue[index - 1].time))) return;
+    const tail = stamps.find(item => !item.text && item.time > dialogue[dialogue.length - 1].time)?.time;
     dialogue.forEach((item, index) => {
       lessonLines[index].start = item.time;
-      if (index + 1 < dialogue.length) lessonLines[index].end = Math.max(item.time + 0.1, dialogue[index + 1].time - 0.08);
-      else lessonLines[index].end = Math.max(lessonLines[index].end, item.time + 0.5);
+      if (index + 1 < dialogue.length) lessonLines[index].end = dialogue[index + 1].time;
+      else if (Number.isFinite(tail)) lessonLines[index].end = tail;
     });
   } catch (error) {
     console.warn('LRC の読み込みに失敗しました。内蔵時刻を使います。', error);
