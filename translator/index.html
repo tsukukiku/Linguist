@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f7f4ed">
   <meta name="description" content="一问三知翻译家：按对象与场合调整语气的中日英翻译。">
   <title>一问三知 · 翻译家</title>
-  <link rel="stylesheet" href="./styles.css?v=20261108-4">
+  <link rel="stylesheet" href="./styles.css?v=20261108-5">
 </head>
 <body>
   <div class="shell">
@@ -28,6 +28,7 @@
           <button id="preferencesSummary" class="preferences-summary" type="button" aria-label="打开翻译设置"><span id="preferencesText">中文 → 日语 · 男性 · 日常交流</span><span aria-hidden="true">设置 ↗</span></button>
           <div class="input-label"><label for="sourceText">生成或输入文本</label><span id="charCount">0 / 1000</span></div>
           <textarea id="sourceText" maxlength="1000" placeholder="在这里输入文本，或使用麦克风录音…"></textarea>
+          <div id="textResizeHandle" class="text-resize-handle" role="separator" aria-orientation="horizontal" aria-label="拖动调整文本框高度" tabindex="0"><span aria-hidden="true"></span></div>
           <div class="record-panel">
             <button id="recordBtn" class="record-btn" type="button"><span class="mic-icon">🎙</span><span id="recordLabel">开始录音</span></button>
             <div class="record-meta"><div id="recordTime" class="record-time">00:00 <span>/ 00:15</span></div><div id="recordHint">设备或 NAS 本地识别</div></div>
@@ -66,7 +67,7 @@
     <label class="field">访问口令<input id="accessToken" type="password" placeholder="NAS 中的 ACCESS_TOKEN" autocomplete="off"></label>
     <button id="saveSettingsBtn" class="primary-btn" type="button">保存设置</button><div id="settingsStatus" class="status" role="status"></div></form></dialog>
   <audio id="audioPlayer" preload="none"></audio>
-  <script src="./app.js?v=20261108-2" defer></script>
+  <script src="./app.js?v=20261108-3" defer></script>
 </body>
 </html>
 
