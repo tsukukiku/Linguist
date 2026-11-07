@@ -11,3 +11,26 @@
 .record-wave.active span{background:#2e9863}
 @media(max-width:500px){.record-panel{flex-wrap:wrap}.record-wave{min-width:60px}.settings-grid{gap:10px}.settings{padding:22px}}
 
+/* On phones, recording is the primary action and all preferences live in the gear dialog. */
+@media(max-width:600px){
+  .shell{padding:0 16px}
+  .topbar{height:62px}
+  .topbar .icon-btn{width:44px;height:44px;font-size:21px}
+  .intro{padding:18px 0 14px}
+  .intro .eyebrow,.intro p{display:none}
+  .intro h1{font-size:clamp(28px,8vw,34px);line-height:1.18;margin:0;letter-spacing:-.06em}
+  .workspace{gap:12px}
+  .composer{display:flex;flex-direction:column;padding:14px 17px 20px}
+  .composer .card-heading,.composer .preferences-summary{display:none}
+  .composer .record-panel{order:0;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:center;gap:10px;min-height:min(53svh,420px);margin:0;padding:8px 0;background:transparent;border:0}
+  .composer .record-btn{min-width:180px;min-height:60px;padding:13px 20px;border-radius:12px;font-size:16px;box-shadow:0 6px 20px rgba(35,98,61,.1)}
+  .composer .mic-icon{font-size:19px;margin-right:9px}
+  .composer .record-meta{text-align:center;font-size:11px}
+  .composer .record-time{font-size:15px}
+  .composer .record-wave{margin:0;min-width:78px}
+  .composer .input-label{order:1;margin:0 0 8px;font-size:13px}
+  .composer textarea{order:2;min-height:130px;height:150px}
+  .composer .status{order:3;margin:11px 0 8px}
+  .composer #translateBtn{order:4}
+}
+
