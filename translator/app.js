@@ -69,3 +69,31 @@ async function saveSettings(){
 
 $('sourceText').addEventListener('input',updateCount);$('translateBtn').onclick=translate;$('recordBtn').onclick=startRecording;$('sourceLang').onchange=()=>{$('recordTime').innerHTML='00:00 <span>/ 00:15</span>'};$('playBtn').onclick=async()=>{if(audio.paused){try{await audio.play();$('playBtn').textContent='Ⅱ';$('playBtn').setAttribute('aria-label','暂停')}catch{status('无法播放语音，请尝试下载 MP3。',true)}}else{audio.pause();$('playBtn').textContent='▶';$('playBtn').setAttribute('aria-label','播放')}};audio.onended=()=>{$('playBtn').textContent='▶';$('playBtn').setAttribute('aria-label','播放')};document.querySelectorAll('[data-speed]').forEach(b=>b.onclick=()=>{audio.playbackRate=Number(b.dataset.speed);document.querySelectorAll('[data-speed]').forEach(x=>x.classList.toggle('active',x===b))});$('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(current.translated);status('译文已复制。')}catch{status('复制失败，请手动选择译文。',true)}};$('downloadBtn').onclick=()=>current&&downloadRecords([current],`一问三知翻译_${current.id}.zip`);$('downloadAllBtn').onclick=()=>downloadRecords([...records].reverse(),`一问三知翻译合集_${Date.now()}.zip`);function openSettings(){$('accessToken').value=accessToken;$('settingsStatus').textContent='';$('settingsDialog').showModal()}$('settingsBtn').onclick=openSettings;$('preferencesSummary').onclick=openSettings;$('saveSettingsBtn').onclick=saveSettings;loadPreferences();loadRecords();
 
+const textResizeHandle = $('textResizeHandle');
+let resizePointer = null, resizeStartY = 0, resizeStartHeight = 0;
+textResizeHandle.addEventListener('pointerdown', event => {
+  if (event.pointerType === 'mouse' && event.button !== 0) return;
+  resizePointer = event.pointerId;
+  resizeStartY = event.clientY;
+  resizeStartHeight = $('sourceText').getBoundingClientRect().height;
+  textResizeHandle.setPointerCapture(event.pointerId);
+  event.preventDefault();
+});
+textResizeHandle.addEventListener('pointermove', event => {
+  if (event.pointerId !== resizePointer) return;
+  $('sourceText').style.height = `${Math.max(76, Math.min(600, resizeStartHeight + event.clientY - resizeStartY))}px`;
+});
+function finishTextResize(event) {
+  if (event.pointerId !== resizePointer) return;
+  resizePointer = null;
+  if (textResizeHandle.hasPointerCapture(event.pointerId)) textResizeHandle.releasePointerCapture(event.pointerId);
+}
+textResizeHandle.addEventListener('pointerup', finishTextResize);
+textResizeHandle.addEventListener('pointercancel', finishTextResize);
+textResizeHandle.addEventListener('keydown', event => {
+  if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
+  event.preventDefault();
+  const field = $('sourceText');
+  field.style.height = `${Math.max(76, Math.min(600, field.getBoundingClientRect().height + (event.key === 'ArrowDown' ? 24 : -24)))}px`;
+});
+
