@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f4ed">
+  <meta name="description" content="一问三知翻译家：按对象与场合调整语气的中日英翻译。">
+  <title>一问三知 · 翻译家</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="一问三知翻译家首页"><span class="brand-mark">文</span><span>一问三知<span class="brand-light"> / 翻译家</span></span></a>
+      <div class="top-actions"><span class="secure-label"><span class="secure-dot"></span>API 密钥仅在 NAS</span><button id="settingsBtn" class="icon-btn" type="button" aria-label="连接设置" title="连接设置">⚙</button></div>
+    </header>
+
+    <main id="top">
+      <section class="intro">
+        <div class="eyebrow"><span class="line"></span> LANGUAGE, WITH CONTEXT</div>
+        <h1>把话说对，<em>也说得体。</em></h1>
+        <p>先选好说话人与对象，再输入或录下短句。翻译、朗读、保存，一气呵成。</p>
+      </section>
+
+      <div class="workspace">
+        <section class="card composer" aria-labelledby="composeTitle">
+          <div class="card-heading"><div><span class="step">01 / INPUT</span><h2 id="composeTitle">准备翻译</h2></div><span class="hint">每段语音最长 15 秒</span></div>
+          <div class="field-row two">
+            <label class="field">我的身份<select id="speakerGender"><option value="male">男性</option><option value="female">女性</option></select></label>
+            <label class="field">对方身份<select id="listenerRole"><option value="daily">日常交流</option><option value="superior">上司</option><option value="colleague">同事</option><option value="subordinate">下级</option><option value="formal">正式场合</option><option value="written">书面用语</option></select></label>
+          </div>
+          <div class="field-row two">
+            <label class="field">输入语言<select id="sourceLang"><option value="zh">中文</option><option value="ja">日语</option><option value="en">英语</option></select></label>
+            <label class="field">翻译成<select id="targetLang"><option value="ja">日语</option><option value="zh">中文</option><option value="en">英语</option></select></label>
+          </div>
+          <div class="input-label"><label for="sourceText">想说的话</label><span id="charCount">0 / 1000</span></div>
+          <textarea id="sourceText" maxlength="1000" placeholder="在这里输入一句话，或点击下方麦克风录音…"></textarea>
+          <div class="record-panel">
+            <button id="recordBtn" class="record-btn" type="button"><span class="mic-icon">🎙</span><span id="recordLabel">开始录音</span></button>
+            <div class="record-meta"><div id="recordTime" class="record-time">00:00 <span>/ 00:15</span></div><div id="recordHint">设备或 NAS 本地识别</div></div>
+          </div>
+          <div id="status" class="status" role="status" aria-live="polite">准备就绪</div>
+          <button id="translateBtn" class="primary-btn" type="button"><span>翻译并生成语音</span><span aria-hidden="true">↗</span></button>
+        </section>
+
+        <section class="card result" aria-labelledby="resultTitle">
+          <div class="card-heading"><div><span class="step">02 / RESULT</span><h2 id="resultTitle">翻译结果</h2></div><span class="result-language" id="resultLanguage">JA</span></div>
+          <div id="emptyResult" class="empty-result"><div class="empty-symbol">“<span>あ</span>”</div><h3>合适的话，正在等你说出口。</h3><p>翻译后会在这里显示文字与朗读音频。</p></div>
+          <div id="filledResult" class="filled-result" hidden>
+            <div class="result-caption">译文 · <span id="toneLabel">日常交流</span></div>
+            <div id="translatedText" class="translated-text"></div>
+            <div class="divider"></div>
+            <div class="result-caption">原文</div><p id="originalText" class="original-text"></p>
+            <div class="audio-tools"><button id="playBtn" class="play-btn" type="button" aria-label="播放或暂停">▶</button><div class="audio-main"><div class="audio-title">语音朗读 <span id="audioState">等待生成</span></div><div class="speed-group" role="group" aria-label="播放速度"><button type="button" data-speed="0.8">0.8×</button><button type="button" data-speed="1" class="active">1.0×</button><button type="button" data-speed="1.2">1.2×</button></div></div></div>
+            <div class="result-buttons"><button id="copyBtn" type="button">复制译文</button><button id="downloadBtn" type="button">下载本句 ZIP ↓</button></div>
+          </div>
+        </section>
+      </div>
+
+      <section class="history-section" aria-labelledby="historyTitle"><div class="history-heading"><div><span class="step">03 / COLLECTION</span><h2 id="historyTitle">本地记录 <span id="historyCount">0</span></h2></div><button id="downloadAllBtn" class="text-btn" type="button" disabled>打包下载全部 ↓</button></div><div id="historyList" class="history-list"><div class="history-empty">翻译记录会保存在这台设备的浏览器中。</div></div></section>
+    </main>
+    <footer><span>一问三知 · 翻译家</span><span>表达准确，也顾及语气。</span></footer>
+  </div>
+
+  <dialog id="settingsDialog"><form method="dialog" class="settings"><div class="settings-head"><div><span class="step">CONNECTION</span><h2>连接设置</h2></div><button class="icon-btn" value="cancel" aria-label="关闭" type="submit">×</button></div><p>填写 Synology 后端的 HTTPS 地址。访问口令仅保存在当前浏览器会话中；DeepSeek 和 Google 密钥始终留在 NAS。</p><label class="field">后端地址<input id="apiBase" type="url" placeholder="https://api.example.com" autocomplete="url"></label><label class="field">访问口令（如已设置）<input id="accessToken" type="password" placeholder="Synology ACCESS_TOKEN" autocomplete="off"></label><button id="saveSettingsBtn" class="primary-btn" type="button">保存连接</button><div id="settingsStatus" class="status" role="status"></div></form></dialog>
+  <audio id="audioPlayer" preload="none"></audio>
+  <script src="./app.js" defer></script>
+</body>
+</html>
+
