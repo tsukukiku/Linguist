@@ -23,8 +23,8 @@
   .composer{display:flex;flex-direction:column;padding:14px 17px 20px}
   .composer .card-heading,.composer .preferences-summary{display:none}
   .composer .record-panel{order:0;display:flex;flex-direction:column;flex-wrap:nowrap;justify-content:center;gap:10px;min-height:min(53svh,420px);margin:0;padding:8px 0;background:transparent;border:0}
-  .composer .record-btn{min-width:180px;min-height:60px;padding:13px 20px;border-radius:12px;font-size:16px;box-shadow:0 6px 20px rgba(35,98,61,.1)}
-  .composer .mic-icon{font-size:19px;margin-right:9px}
+  .composer .record-btn{min-width:120px;min-height:48px;padding:12px;border-radius:10px;font-size:15.6px;box-shadow:0 6px 20px rgba(35,98,61,.1)}
+  .composer .mic-icon{font-size:16px;margin-right:7px}
   .composer .record-meta{text-align:center;font-size:11px}
   .composer .record-time{font-size:15px}
   .composer .record-wave{margin:0;min-width:78px}
