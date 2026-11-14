@@ -35,7 +35,7 @@
   .composer textarea{order:0;min-height:76px;height:90px;resize:vertical}
   .composer .text-resize-handle{order:0;display:flex}
   .composer .status{order:0;min-height:20px;margin:8px 0 6px}
-  .composer #translateBtn{order:0;min-height:48px}
+  .composer #translateBtn{order:0;min-height:48px;font-size:clamp(12px,3.6vw,15px);gap:8px}
 }
 
 .text-resize-handle{display:none;align-items:center;justify-content:center;height:18px;touch-action:none;cursor:ns-resize;color:#a3b8a7}
