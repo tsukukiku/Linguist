@@ -9,8 +9,7 @@ if(accessToken && !localStorage.getItem('accessToken')) localStorage.setItem('ac
 const audio = $('audioPlayer');
 
 function status(message, error=false){$('status').textContent=message;$('status').classList.toggle('error',error)}
-function sameLanguage(){return $('sourceLang').value===$('targetLang').value}
-function updateActionLabel(){$('translateBtn').querySelector('span').textContent=sameLanguage()?'生成语音':'翻译并生成语音'}
+function updateActionLabel(){$('translateBtn').querySelector('span').textContent='翻译并生成语音（支持原文朗读）'}
 function setBusy(busy){$('translateBtn').disabled=busy;if(busy)$('translateBtn').querySelector('span').textContent='处理中…';else updateActionLabel()}
 function b64ToBlob(base64,type){const bytes=atob(base64);const data=new Uint8Array(bytes.length);for(let i=0;i<bytes.length;i++)data[i]=bytes.charCodeAt(i);return new Blob([data],{type})}
 function openDb(){return new Promise((resolve,reject)=>{const request=indexedDB.open(DB_NAME,1);request.onupgradeneeded=()=>request.result.createObjectStore('records',{keyPath:'id'});request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error)})}
